@@ -1,4 +1,5 @@
 const express = require("express");
+const auth = require("./middleware/auth");
 require("express-async-errors");
 
 const app = express();
@@ -6,9 +7,6 @@ const app = express();
 // .env update
 require("dotenv").config(); // to load the .env file into the process.env object
 const session = require("express-session");
-
-
-
 
 // updating mongoDB
 const MongoDBStore = require("connect-mongodb-session")(session);
@@ -36,27 +34,37 @@ if (app.get("env") === "production") {
     sessionParms.cookie.secure = true; // serve secure cookies
 }
 
+app.use(require("body-parser").urlencoded({ extended: true }));
 app.use(session(sessionParms));
 
 // added flash
 app.use(require("connect-flash")());
 
+// Passport initialization
+/* ------------------ 7.19.2024 --------------------- */
+const passport = require("passport");
+const passportInit = require("./passport/passportInit");
 
+passportInit();
+app.use(passport.initialize());
+app.use(passport.session());
+/* -------------------------------------------------- */
 
-
+app.use(require("./middleware/storeLocals"));
 
 app.set("view engine", "ejs");
-app.use(require("body-parser").urlencoded({ extended: true }));
 
-
-
-
-
-
-
+// WEEK14 ASSIGNMENT UPDATES /////////////////////////////////////////
+app.get("/", (req, res) => {
+    res.render("index");
+});
+app.use("/sessions", require("./routes/sessionRoutes"));
+/////////////////////////////////////////////////////////////////////
 
 // secret word handling
-// let secretWord = "syzygy"; <-- comment this out or remove this line
+const secretWordRouter = require("./routes/secretWord");
+app.use("/secretWord", auth, secretWordRouter);
+
 app.get("/secretWord", (req, res) => {
     if (!req.session.secretWord) {
         req.session.secretWord = "syzygy";
@@ -65,7 +73,6 @@ app.get("/secretWord", (req, res) => {
     res.locals.errors = req.flash("error");
     res.render("secretWord", { secretWord: req.session.secretWord });
 });
-
 
 // updated post request for secretWord
 app.post("/secretWord", (req, res) => {
@@ -79,13 +86,12 @@ app.post("/secretWord", (req, res) => {
     res.redirect("/secretWord");
 });
 
-
-
-
+// Handle 404 errors
 app.use((req, res) => {
     res.status(404).send(`That page (${req.url}) was not found.`);
 });
 
+// Error-handling middleware
 app.use((err, req, res, next) => {
     res.status(500).send(err.message);
     console.log(err);
@@ -95,6 +101,10 @@ const port = process.env.PORT || 3000;
 
 const start = async () => {
     try {
+        // WEEK14 ASSIGNMENT ////////////////////////////////
+        await require("./db/connect")(process.env.MONGO_URI);
+        /////////////////////////////////////////////////////
+
         app.listen(port, () =>
             console.log(`Server is listening on port ${port}...`)
         );
