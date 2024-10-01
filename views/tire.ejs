@@ -1,0 +1,51 @@
+<!-- Add Tire Form -->
+
+<form method="POST" action="<%- (tire) ? '/tires/update/' + tire.id : '/tires' %>">
+    <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+
+    <!-- Tire Brand -->
+    <div>
+        <label for="brand">Brand:</label>
+        <input type="text" name="brand" id="brand" value="<%- (tire && tire.brand) ? tire.brand : '' %>" required />
+    </div>
+
+    <!-- Tire Size -->
+    <div>
+        <label for="size">Size:</label>
+        <input type="text" name="size" id="size" value="<%- (tire && tire.size) ? tire.size : '' %>" required />
+    </div>
+
+    <!-- Tire Price -->
+    <div>
+        <label for="price">Price:</label>
+        <input type="number" name="price" id="price" step="0.01" value="<%- (tire && tire.price) ? tire.price : '' %>"
+            required />
+    </div>
+
+    <!-- Tire Quantity -->
+    <div>
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" id="quantity" value="<%- (tire && tire.quantity) ? tire.quantity : '' %>"
+            required />
+    </div>
+
+    <!-- Tire Location -->
+    <div>
+        <label for="location">Location:</label>
+        <select name="location" id="location">
+            <option value="Mebane" <%- (tire && tire.location==='Mebane' ) ? 'selected' : '' %>>Mebane</option>
+            <option value="Greensboro" <%- (tire && tire.location==='Greensboro' ) ? 'selected' : '' %>>Greensboro
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+
+<div>
+    <a href="/tires">
+        <button type="button">Cancel</button>
+    </a>
+</div>

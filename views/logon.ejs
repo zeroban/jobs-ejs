@@ -1,6 +1,8 @@
 <%- include("partials/head.ejs") %>
     <%- include("partials/header.ejs") %>
         <form method="POST">
+            <!-- added the csrf hidden value  -->
+            <input type="hidden" name="_csrf" value="<%= _csrf %>">
             <div>
                 <label name="email">Enter your email:</label>
                 <input name="email" />
