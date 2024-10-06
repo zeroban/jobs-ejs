@@ -3,12 +3,9 @@ const { seed_db, testUserPassword } = require("../util/seed_db");
 const get_chai = require("../util/get_chai");
 const { app } = require("../app");
 const { default: factory } = require("factory-bot");
-const faker = require("@faker-js/faker").fakerEN_US;
 
 
-
-
-describe("tests CRUD", function () {
+describe("puppeteer tire operations", function () {
     before(async () => {
         const { expect, request } = await get_chai();
         this.test_user = await seed_db();
@@ -94,6 +91,7 @@ describe("tests CRUD", function () {
         // console.log(jobs);
 
         expect(pageParts.length).to.equal(22);
+
     });
 
 

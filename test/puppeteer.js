@@ -12,7 +12,7 @@ describe("jobs-ejs puppeteer test", function () {
     before(async function () {
         this.timeout(10000);
         //await sleeper(5000)
-        browser = await puppeteer.launch({ headless: false, slowMo: 50 });
+        browser = await puppeteer.launch({ headless: false, slowMo: 10 });
         page = await browser.newPage();
         await page.goto("http://localhost:3000");
     });
@@ -52,9 +52,9 @@ describe("jobs-ejs puppeteer test", function () {
             await page.waitForSelector(`p ::-p-text(${testUser.name} is logged on.)`);
             // await page.waitForSelector("a ::-p-text(change the secret)");
             await page.waitForSelector('a[href="/secretWord"]');
-            // const copyr = await page.waitForSelector("p ::-p-text(copyright)");
-            // const copyrText = await copyr.evaluate((el) => el.textContent);
-            // console.log("copyright text: ", copyrText);
+            const copyr = await page.waitForSelector("p ::-p-text(copyright)");
+            const copyrText = await copyr.evaluate((el) => el.textContent);
+            console.log("copyright text: ", copyrText);
         });
 
     });
@@ -76,7 +76,7 @@ describe("jobs-ejs puppeteer test", function () {
             const content = await page.content();
             const pageParts = content.split("<tr>");
 
-            // assignment said to expect 20 but I am getting 21
+            // assignment said to expect 20 but I am getting 21 not sure if I am wrong somewhere
             expect(pageParts.length).to.equal(21);
 
 
